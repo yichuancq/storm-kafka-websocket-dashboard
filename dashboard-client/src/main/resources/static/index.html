@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <title>ECharts3</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 可选的Bootstrap主题文件（一般不使用） -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/socket.io/1.5.1/socket.io.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.1.0.rc1/echarts.min.js"></script>
+    <!-- ECharts 3 引入 -->
+    <script src="http://echarts.baidu.com/dist/echarts.min.js"></script>
+    <!-- 引入 vintage 主题 -->
+    <script src="theme/macarons.js"></script>
+
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="row">
+        <!--地图-->
+        <div class="col-md-6">
+            <div id="china2" style="width:1200px;height:500px;"></div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="myChart" style="width:600px;height:350px;"></div>
+        </div>
+        <!--带日历的饼状图-->
+        <div class="col-md-6">
+            <div id="myPie" style="width:600px;height:350px;"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <!--仪表盘-->
+            <div id="timeTicket" style="width:600px;height:350px;"></div>
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
+    <div class="row" style="margin-top:0px">
+        <div class="col-md-12">
+            <div id="calendar" style="width:1200px;height:250px;"></div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var myPie = echarts.init(document.getElementById('myPie'), 'macarons');
+    var myChart = echarts.init(document.getElementById('myChart'), 'macarons');
+    // 显示标题，图例和空的坐标轴
+    myChart.setOption({
+        // 全局调色盘。
+        title: {
+            text: '后端推送数据加载示例-销量数据图'
+        },
+        tooltip: {},
+        xAxis: {
+            data: []
+        },
+        yAxis: {},
+        series: [{
+            name: '销量',
+            type: 'bar',
+            data: []
+        }]
+    });
+    //环形图
+    myPie.setOption({
+        title: {
+            text: '后端推送数据加载示例-环形图'
+        },
+        legend: {
+            bottom: 10,
+            left: 'center',
+            data: []
+        },
+        series: [{
+            name: '访问来源',
+            type: 'pie',
+            radius: '55%',//size
+            data: []
+        }
+        ]
+    })
+
+    //填充数据
+    function fill(data) {
+        myChart.hideLoading();
+        myPie.hideLoading();
+        //环形图填入数据
+        myPie.setOption({
+            series: [{data: data.data}],
+            legend: [{data: data.data}]
+        });
+        // 直方图填入数据
+        myChart.setOption({
+            xAxis: {
+                data: data.tag
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true}
+                }
+            },
+            legend: [{data: data.data}],
+            series: [{
+                // 根据名字对应到相应的系列
+                name: '销量',
+                data: data.data
+            }]
+        });
+    }
+    // 首次显示加载动画
+    myPie.showLoading();
+    myChart.showLoading();
+    // 建立socket连接，等待服务器“推送”数据，用回调函数更新图表
+    $(document).ready(function () {
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + 8081);
+        socket.on('event_bar', function (data) {
+            fill(data);
+        });
+        socket.on('connect', function () {
+            console.info("connect");
+        });
+        socket.on('reconnect_failed', function () {
+            console("Reconnect Failed");
+        });// end animation
+    });
+</script>
+<script src="js/china.js"></script>
+<script src="js/area.js"></script>
+<script src="js/ticket.js"></script>
+<script src="js/calendar.js"></script>
+
+</body>
+</html>
