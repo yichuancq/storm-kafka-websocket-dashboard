@@ -22,7 +22,6 @@ public interface PushEventService {
      */
     void refreshBar(List<Data> dataDTOS, List<String> strings);
 
-
     /**
      * 推送内存占用
      *
