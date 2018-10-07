@@ -36,7 +36,6 @@ public class PushEventServiceImpl implements PushEventService {
         }
     }
 
-
     /**
      * 地图刷新
      *

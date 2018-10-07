@@ -7,12 +7,3 @@
 *.iml
 out
 gen
-#dashboard-client/
-#flink-mqtt-server/
-#spark-socket-server/
-#storm-mqtt-server/
-#web-socket-server/
-/web-socket-server/target/
-/storm-mqtt-server/target/
-/dashboard-client/target/
-/flink-mqtt-server/target/
