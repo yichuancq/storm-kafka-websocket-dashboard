@@ -21,8 +21,7 @@ public class FlinkKafka {
         properties.setProperty("bootstrap.servers", "localhost:9092");
         properties.setProperty("zookeeper.connect", "localhost:2181");
         properties.setProperty("group.id", "test");
-//        properties.setProperty("group.id", "test");
-
+        //
         FlinkKafkaConsumer09<String> myConsumer = new FlinkKafkaConsumer09<String>("test", new SimpleStringSchema(), properties);
 
         DataStream<String> stream = env.addSource(myConsumer);

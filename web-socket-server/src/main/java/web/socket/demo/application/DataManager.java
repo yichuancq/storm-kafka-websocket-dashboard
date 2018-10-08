@@ -18,7 +18,6 @@ public class DataManager {
     @Autowired
     private PushEventService pushEventService;
     // 数据库保存
-
     @Autowired
     private DataRepository dataRepository;
 
@@ -26,7 +25,6 @@ public class DataManager {
      * 地图推送
      */
     public void refreshMap() {
-
         //设置固定城市
         String[] stations = {"北京", "成都", "重庆", "贵阳", "上海", "厦门", "南京"};
         // 获取固定个数的随机数
