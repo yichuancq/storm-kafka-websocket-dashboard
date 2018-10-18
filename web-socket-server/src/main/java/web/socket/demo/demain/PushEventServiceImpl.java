@@ -1,13 +1,16 @@
 package web.socket.demo.demain;
 
+import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
+import com.corundumstudio.socketio.annotation.OnEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import web.socket.demo.demain.pushInfo.Data;
 import web.socket.demo.demain.pushInfo.RoteEnum;
+import web.socket.demo.viewmodel.MessageInfo;
 
 import java.util.*;
 
@@ -23,6 +26,19 @@ public class PushEventServiceImpl implements PushEventService {
         this.socketIoServer.start();
         // 启动监听
         System.out.println("socket.io启动成功！");
+    }
+
+    /**
+     * 接收消息
+     *
+     * @param client
+     * @param request
+     * @param messageInfo
+     */
+    @OnEvent(value = "messageevent")
+    public void onEvent(SocketIOClient client, AckRequest request, MessageInfo messageInfo) {
+        System.out.println("发来消息：" + messageInfo.getMsgContent());
+        socketIoServer.getClient(client.getSessionId()).sendEvent("messageevent", "back data");
     }
 
     @Override
@@ -50,6 +66,7 @@ public class PushEventServiceImpl implements PushEventService {
             socketIoServer.getClient(clientId).sendEvent(RoteEnum.event_map.name(), map);
         }
     }
+
 
     /**
      * 条形图刷新
